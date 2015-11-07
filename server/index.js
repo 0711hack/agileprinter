@@ -54,7 +54,7 @@ function createPDF(deck, cb) {
 }
 
 function lp(cb) {
-  var child = exec("lp ./deck.pdf", function(err, stdout, stderr) {
+  var child = exec("lp -c ./deck.pdf", function(err, stdout, stderr) {
     if (err) {
       cb(err);
     } else {
