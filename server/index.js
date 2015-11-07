@@ -40,7 +40,13 @@ function createPDF(deck, cb) {
     if (i > 0) {
       doc.addPage(pageConfig);
     }
-    doc.roundedRect(1, 1, 248, 78, 3).stroke();
+    if (item.type === "list") {
+      doc.rect(1, 78, 248, 79).stroke();
+      doc.fontSize(24);
+    } else {
+      doc.roundedRect(1, 1, 248, 78, 3).stroke();
+      doc.fontSize(16);
+    }
     doc.text(item.name, 5, 5);
   });
   doc.end();
