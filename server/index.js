@@ -35,7 +35,7 @@ function createPDF(deck, cb) {
   deck = deck.slice(0, 3); // TODO remove after testing
   var pageConfig = {size: [250, 80], margin: 0};
   var doc = new pdfkit(pageConfig);
-  doc.pipe(fs.createWriteStream("./deck.pdf"));
+  var stream = doc.pipe(fs.createWriteStream("./deck.pdf"));
   deck.forEach(function(item, i) {
     if (i > 0) {
       doc.addPage(pageConfig);
@@ -50,7 +50,10 @@ function createPDF(deck, cb) {
     doc.text(item.name, 5, 5);
   });
   doc.end();
-  cb();
+  stream.on("finish", function() {
+    console.log("finish");
+    cb();
+  });
 }
 
 function lp(cb) {
