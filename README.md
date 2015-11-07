@@ -1,4 +1,4 @@
-# Agile Printer
+# AgilePrinter
 
 ## Server
 

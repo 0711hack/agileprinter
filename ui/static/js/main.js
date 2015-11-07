@@ -70,7 +70,7 @@ function authenticationFailure() {
 }
 
 var a = Trello.authorize({
-  "name": "Agile Printer",
+  "name": "AgilePrinter",
   "expiration": "5minutes",
   "success": authenticationSuccess,
   "error": authenticationFailure
