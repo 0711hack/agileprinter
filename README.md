@@ -1,11 +1,21 @@
 # Agile Printer
 
+## Server
+
+To start the printing server run
+
+```
+$ cd server/
+$ npm install
+$ node index.js
+```
+
 ## UI
 
 To start the UI run
 
 ```
-cd ui/
+$ cd ui/
 $ npm install
 $ node index.js
 ```
