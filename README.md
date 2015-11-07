@@ -10,6 +10,8 @@ $ npm install
 $ node index.js
 ```
 
+.
+
 ## UI
 
 To start the UI run
@@ -20,4 +22,4 @@ $ npm install
 $ node index.js
 ```
 
-and visit http://localhost:8080
+and visit http://localhost:8080 to configure your AgilePrinter.
