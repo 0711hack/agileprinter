@@ -14,6 +14,7 @@ server.use(restify.CORS());
 server.post("/config", function (req, res, next) {
   fs.writeFile("./config.json", JSON.stringify(req.body), function(err) {
     if (err) {
+      console.log("error", JSON.stringify(err));
       res.send(err);
     } else {
       res.send(204);
