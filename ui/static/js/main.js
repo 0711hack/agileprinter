@@ -23,15 +23,32 @@ function configBoard(board) {
 
 function boardsSuccess(res) {
   var html = "";
-  res.forEach(function(board) {
-    html += "<li><a href='#' data-board='" + board.id + "'>" + board.name + "</a></li>";
+  $.ajax({
+    "url": "http://" + window.location.hostname + ":8081/config/trello/board",
+    "type": "GET",
+    "dataType": "json",
+    "success": function(activeBoard) {
+      res.forEach(function(board, i) {
+        if (board.id === activeBoard) {
+          html += "<li class='active'>";
+        } else {
+          html += "<li>";
+        }
+        html += "<a href='#' data-board='" + board.id + "'>" + board.name + "</a></li>";
+      });
+      $("p").hide();
+      $("ul").html(html);
+      $("a[data-board]").click(function(e) {
+        configBoard($(this).data("board"));
+        e.preventDefault();
+      });
+    },
+    "error": function() {
+      alert("error while configuring");
+    }
   });
-  $("p").hide();
-  $("ul").html(html);
-  $("a[data-board]").click(function(e) {
-    configBoard($(this).data("board"));
-    e.preventDefault();
-  });
+  
+  
 }
 function boardsFailure() {
   alert("error while getting boards information");

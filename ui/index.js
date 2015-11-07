@@ -11,6 +11,12 @@ server.get("/", restify.serveStatic({
 server.get(/\/js\/?.*/, restify.serveStatic({
   "directory": "./static"
 }));
+server.get(/\/img\/?.*/, restify.serveStatic({
+  "directory": "./static"
+}));
+server.get(/\/css\/?.*/, restify.serveStatic({
+  "directory": "./static"
+}));
 
 server.listen(8080, function() {
   console.log("ui started");

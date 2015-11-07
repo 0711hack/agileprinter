@@ -23,6 +23,12 @@ server.post("/config", function (req, res, next) {
   });
 });
 
+server.get("/config/trello/board", function (req, res, next) {
+  var config = require("./config.json");
+  res.send(config.trello.board);
+  return next();
+});
+
 console.log("Starting server API...");
 server.listen(8081, function() {
   console.log("Server API started");
@@ -47,8 +53,6 @@ function createPDF(deck, cb) {
       doc.fontSize(16);
     }
     doc.text(item.name, 10, 5);
-    doc.text("");
-    doc.text("");
   });
   doc.end();
   stream.on("finish", function() {
