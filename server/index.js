@@ -41,7 +41,7 @@ function createPDF(deck, cb) {
       doc.addPage(pageConfig);
     }
     if (item.type === "list") {
-      doc.rect(1, 78, 248, 79).stroke();
+      doc.roundedRect(1, 1, 248, 78, 3).stroke();
       doc.fontSize(24);
     } else {
       doc.roundedRect(1, 1, 248, 78, 3).stroke();
