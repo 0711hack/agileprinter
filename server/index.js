@@ -3,6 +3,7 @@ var fs = require("fs");
 var Tinkerforge = require("tinkerforge");
 var restify = require("restify");
 var Trello = require("trello");
+var async = require("async");
 
 var server = restify.createServer();
 server.use(restify.bodyParser());
@@ -29,7 +30,7 @@ server.listen(8081, function() {
 var ipcon = new Tinkerforge.IPConnection();
 var db = new Tinkerforge.BrickletDualButton("vEm", ipcon);
 
-function print(cb) {
+function print(cb) { // TODO implement
   var config = require("./config.json");
   var trello = new Trello(config.trello.key, config.trello.token);
   trello.getListsOnBoard(config.trello.board, function(err, lists) {
@@ -37,10 +38,28 @@ function print(cb) {
       cb(err);
     } else {
       console.log("lists", lists);
-      cb();
+      async.mapLimit(lists, 5, function(list, cb) {
+        trello.getCardsOnList(list.id, function(err, cards) {
+          if (err) {
+            cb(err);
+          } else {
+            console.log("cards", cards);
+            cb(null, {
+              list: list,
+              cards: cards
+            });
+          }
+        });
+      }, function(err, deck) {
+        if (err) {
+          cb(err);
+        } else {
+          console.log("deck", deck);
+          cb();
+        }
+      });
     }
   });
-  // TODO implement
 }
 
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED, function(connectReason) {
