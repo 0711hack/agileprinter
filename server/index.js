@@ -4,17 +4,16 @@ var Tinkerforge = require("tinkerforge");
 var restify = require("restify");
 var Trello = require("trello");
 var async = require("async");
+var pdfkit = require("pdfkit");
 
 var server = restify.createServer();
 server.use(restify.bodyParser());
 server.use(restify.CORS());
 
 server.post("/config", function (req, res, next) {
-  console.log("POST received", req.body);
   fs.writeFile("./config.json", JSON.stringify(req.body), function(err) {
     if (err) {
-      console.log("error while writinf config", err);
-      res.send(500);
+      res.send(err);
     } else {
       res.send(204);
     }
@@ -30,32 +29,41 @@ server.listen(8081, function() {
 var ipcon = new Tinkerforge.IPConnection();
 var db = new Tinkerforge.BrickletDualButton("vEm", ipcon);
 
-function print(cb) { // TODO implement
+function createPDF(deck, cb) { // TODO implement
+  cb();
+}
+
+function getDeck(cb) {
   var config = require("./config.json");
   var trello = new Trello(config.trello.key, config.trello.token);
+  var deck = [];
   trello.getListsOnBoard(config.trello.board, function(err, lists) {
     if (err) {
       cb(err);
     } else {
-      console.log("lists", lists);
-      async.mapLimit(lists, 5, function(list, cb) {
+      async.eachLimit(lists, 5, function(list, cb) {
         trello.getCardsOnList(list.id, function(err, cards) {
           if (err) {
             cb(err);
           } else {
-            console.log("cards", cards);
-            cb(null, {
-              list: list,
-              cards: cards
+            deck.push({
+              "type": "list",
+              "name": list.name
             });
+            cards.forEach(function(card) {
+              deck.push({
+                "type": "card",
+                "name": card.name
+              });
+            });
+            cb();
           }
         });
-      }, function(err, deck) {
+      }, function(err) {
         if (err) {
           cb(err);
         } else {
-          console.log("deck", deck);
-          cb();
+          cb(null, deck);
         }
       });
     }
@@ -69,9 +77,11 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED, function(connectReason) {
 db.on(Tinkerforge.BrickletDualButton.CALLBACK_STATE_CHANGED, function (buttonLeft, buttonRight) {
   if (buttonLeft === Tinkerforge.BrickletDualButton.BUTTON_STATE_PRESSED) {
     console.log("print");
-    print(function(err) {
+    getDeck(function(err, deck) {
       if (err) {
-        console.log("Error: " + err);
+        console.log("error", JSON.stringify(err));
+      } else {
+        console.log("deck", JSON.stringify(deck));
       }
     });
   }
@@ -79,7 +89,7 @@ db.on(Tinkerforge.BrickletDualButton.CALLBACK_STATE_CHANGED, function (buttonLef
 
 console.log("Connecting with Master Brick...");
 ipcon.connect("192.168.62.140", 4223, function (err) {
-  console.log("Error: " + err);
+  console.log("error", JSON.stringify(err));
   process.exit(1);
 });
 
