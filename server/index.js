@@ -1,4 +1,5 @@
 var fs = require("fs");
+var exec = require("child_process").exec;
 
 var Tinkerforge = require("tinkerforge");
 var restify = require("restify");
@@ -29,8 +30,28 @@ server.listen(8081, function() {
 var ipcon = new Tinkerforge.IPConnection();
 var db = new Tinkerforge.BrickletDualButton("vEm", ipcon);
 
-function createPDF(deck, cb) { // TODO implement
+function createPDF(deck, cb) {
+  var pageConfig = {size: [250, 80], margin: 5};
+  var doc = new pdfkit(pageConfig);
+  doc.pipe(fs.createWriteStream("./deck.pdf"));
+  deck.forEach(function(item, i) {
+    if (i > 0) {
+      doc.addPage(pageConfig);
+    }
+    doc.text(item.name);
+  });
+  doc.end();
   cb();
+}
+
+function lp(cb) {
+  var child = exec("lp ./deck.pdf", function(err, stdout, stderr) {
+    if (err) {
+      cb(err);
+    } else {
+      cb();
+    }
+  });
 }
 
 function getDeck(cb) {
@@ -81,7 +102,19 @@ db.on(Tinkerforge.BrickletDualButton.CALLBACK_STATE_CHANGED, function (buttonLef
       if (err) {
         console.log("error", JSON.stringify(err));
       } else {
-        console.log("deck", JSON.stringify(deck));
+        createPDF(deck, function(err) {
+          if (err) {
+            console.log("error", JSON.stringify(err));
+          } else {
+            lp(function(err) {
+              if (err) {
+                console.log("error", JSON.stringify(err));
+              } else {
+                console.log("printed");
+              }
+            });
+          }
+        });
       }
     });
   }
