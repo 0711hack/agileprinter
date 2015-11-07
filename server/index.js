@@ -32,7 +32,6 @@ var ipcon = new Tinkerforge.IPConnection();
 var db = new Tinkerforge.BrickletDualButton("vEm", ipcon);
 
 function createPDF(deck, cb) {
-  deck = deck.slice(0, 3); // TODO remove after testing
   var pageConfig = {size: [250, 80], margin: 0};
   var doc = new pdfkit(pageConfig);
   var stream = doc.pipe(fs.createWriteStream("./deck.pdf"));
