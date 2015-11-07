@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "tinkerforge": "2.0.5",
+    "restify": "4.0.3"
+  }
+}

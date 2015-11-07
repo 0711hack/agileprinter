@@ -1,6 +1,8 @@
 var restify = require("restify");
 
 var server = restify.createServer();
+server.use(restify.bodyParser());
+server.use(restify.CORS());
 
 server.get("/", restify.serveStatic({
   "directory": "./static",
@@ -11,5 +13,5 @@ server.get(/\/js\/?.*/, restify.serveStatic({
 }));
 
 server.listen(8080, function() {
-  console.log('%s listening at %s', server.name, server.url);
+  console.log("ui started");
 });
