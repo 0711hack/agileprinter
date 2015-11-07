@@ -13,7 +13,10 @@ function configBoard(board) {
     "contentType": "application/json",
     "dataType": "json",
     "success": function() {
-      console.log("configured");
+      $("ul li").each(function() {
+        $(this).removeClass("active");
+      });
+      $("ul li a[data-board='" + board + "']").parent().addClass("active");
     },
     "error": function() {
       alert("error while configuring");
@@ -24,12 +27,12 @@ function configBoard(board) {
 function boardsSuccess(res) {
   var html = "";
   $.ajax({
-    "url": "http://" + window.location.hostname + ":8081/config/trello/board",
+    "url": "http://" + window.location.hostname + ":8081/config/trello",
     "type": "GET",
     "dataType": "json",
-    "success": function(activeBoard) {
+    "success": function(config) {
       res.forEach(function(board, i) {
-        if (board.id === activeBoard) {
+        if (board.id === config.board) {
           html += "<li class='active'>";
         } else {
           html += "<li>";
@@ -47,8 +50,6 @@ function boardsSuccess(res) {
       alert("error while configuring");
     }
   });
-  
-  
 }
 function boardsFailure() {
   alert("error while getting boards information");
@@ -70,7 +71,7 @@ function authenticationFailure() {
 
 var a = Trello.authorize({
   "name": "Agile Printer",
-  "expiration": "never",
+  "expiration": "5minutes",
   "success": authenticationSuccess,
   "error": authenticationFailure
 });

@@ -23,9 +23,9 @@ server.post("/config", function (req, res, next) {
   });
 });
 
-server.get("/config/trello/board", function (req, res, next) {
-  var config = require("./config.json");
-  res.send(config.trello.board);
+server.get("/config/trello", function (req, res, next) {
+  var config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+  res.send({"board": config.trello.board});
   return next();
 });
 
@@ -72,7 +72,7 @@ function lp(cb) {
 }
 
 function getDeck(cb) {
-  var config = require("./config.json");
+  var config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
   var trello = new Trello(config.trello.key, config.trello.token);
   var deck = [];
   trello.getListsOnBoard(config.trello.board, function(err, lists) {
