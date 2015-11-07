@@ -47,6 +47,8 @@ function createPDF(deck, cb) {
       doc.fontSize(16);
     }
     doc.text(item.name, 10, 5);
+    doc.text("");
+    doc.text("");
   });
   doc.end();
   stream.on("finish", function() {
