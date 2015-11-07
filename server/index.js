@@ -32,14 +32,16 @@ var ipcon = new Tinkerforge.IPConnection();
 var db = new Tinkerforge.BrickletDualButton("vEm", ipcon);
 
 function createPDF(deck, cb) {
-  var pageConfig = {size: [250, 80], margin: 5};
+  deck = deck.slice(0, 3); // TODO remove after testing
+  var pageConfig = {size: [250, 80], margin: 0};
   var doc = new pdfkit(pageConfig);
   doc.pipe(fs.createWriteStream("./deck.pdf"));
   deck.forEach(function(item, i) {
     if (i > 0) {
       doc.addPage(pageConfig);
     }
-    doc.text(item.name);
+    doc.roundedRect(1, 1, 248, 78, 3).stroke();
+    doc.text(item.name, 5, 5);
   });
   doc.end();
   cb();
