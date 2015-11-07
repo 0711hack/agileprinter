@@ -7,7 +7,7 @@ function configBoard(board) {
     }
   };
   $.ajax({
-    "url": "http://localhost:8081/config",
+    "url": "http://" + window.location.hostname + ":8081/config",
     "type": "POST",
     "data": JSON.stringify(config),
     "contentType": "application/json",
