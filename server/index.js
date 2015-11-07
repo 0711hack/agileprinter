@@ -124,7 +124,7 @@ db.on(Tinkerforge.BrickletDualButton.CALLBACK_STATE_CHANGED, function (buttonLef
 });
 
 console.log("Connecting with Master Brick...");
-ipcon.connect("192.168.62.140", 4223, function (err) {
+ipcon.connect("localhost", 4223, function (err) {
   console.log("error", JSON.stringify(err));
   process.exit(1);
 });
