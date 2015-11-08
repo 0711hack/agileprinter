@@ -69,9 +69,9 @@ function authenticationFailure() {
   alert("error while authenticating");
 }
 
-var a = Trello.authorize({
+Trello.authorize({
   "name": "AgilePrinter",
-  "expiration": "5minutes",
+  "expiration": "1hour",
   "success": authenticationSuccess,
   "error": authenticationFailure
 });
